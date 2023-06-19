@@ -1,20 +1,19 @@
-
 import styled from 'styled-components';
 import type { Expense } from '../../types';
 
-const ExpenseDate = ({ date }: Pick<Expense, 'date'>) => {
+const ExpenseDateBox = ({ date }: Pick<Expense, 'date'>) => {
   return (
-    <ExpenseDateWrapper>
+    <Wrapper>
       <Month>{date.toLocaleString('en-US', { month: 'long' })}</Month>
       <Year>{date.toLocaleString('en-US', { day: '2-digit' })}</Year>
       <Day>{date.getFullYear()}</Day>
-    </ExpenseDateWrapper>
+    </Wrapper>
   );
 };
 
-export default ExpenseDate;
+export default ExpenseDateBox;
 
-const ExpenseDateWrapper = styled.div`
+const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;

@@ -1,29 +1,40 @@
 import styled from 'styled-components';
-import ExpenseDate from './ExpenseDate';
-import Card from '../UI/Card';
+import ExpenseDateBox from './ExpenseDateBox';
 import type { Expense } from '../../types';
 
 const ExpenseItem = ({ title, amount, date }: Omit<Expense, 'id'>) => {
   return (
-    <Card>
-      <ExpenseDate date={date} />
+    <Wrapper>
+      <ExpenseDateBox date={date} />
       <ExpenseDescription>
-        <DescriptionHeader>{title}</DescriptionHeader>
+        <Title>{title}</Title>
         <ExpensePrice>${amount}</ExpensePrice>
       </ExpenseDescription>
-    </Card>
+    </Wrapper>
   );
 };
 
 export default ExpenseItem;
+
+const Wrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  margin: 1rem 0;
+  background-color: #4b4b4b;
+
+  border-radius: 12px;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.25);
+`;
 
 const ExpenseDescription = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
   align-items: flex-end;
-  justify-content: flex-start;
   flex-flow: column-reverse;
+  justify-content: flex-start;
   flex: 1;
 
   @media (min-width: 580px) {
@@ -34,7 +45,7 @@ const ExpenseDescription = styled.div`
   }
 `;
 
-const DescriptionHeader = styled.h2`
+const Title = styled.h2`
   color: #3a3a3a;
   font-size: 1rem;
   flex: 1;
