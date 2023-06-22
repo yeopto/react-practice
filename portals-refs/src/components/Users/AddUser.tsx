@@ -2,40 +2,41 @@ import Card from '../UI/Card';
 import Button from '../UI/Button';
 import ErrorModal from '../UI/ErrorModal';
 import classes from './AddUser.module.css';
-import { ChangeEvent, FormEvent, useState } from 'react';
+import { FormEvent, useRef, useState } from 'react';
 
-const AddUser = ({ onAddUser }: { onAddUser: (uName: string, uAge: string) => void }) => {
-  const [enteredUsername, setEnteredUsername] = useState('');
-  const [enteredAge, setEnteredAge] = useState('');
+const AddUser = ({ onAddUser }: { onAddUser: (uName?: string, uAge?: string) => void }) => {
+  const userNameRef = useRef<HTMLInputElement>(null);
+  const userAgeRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState<null | Error>(null);
 
   const addUserHandler = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (enteredUsername.trim().length === 0 || enteredAge.trim().length === 0) {
+    const userName = userNameRef.current?.value;
+    const userAge = userAgeRef.current?.value;
+
+    if (userName?.trim().length === 0 || userAge?.trim().length === 0) {
       setError({
         name: 'Invalid input',
         message: 'Please enter a valid name and age (non-empty values).',
       });
       return;
     }
-    if (+enteredAge < 1) {
+    if (userAge && +userAge < 1) {
       setError({
         name: 'Invalid age',
         message: 'Please enter a valid age (> 0).',
       });
       return;
     }
-    onAddUser(enteredUsername, enteredAge);
-    setEnteredUsername('');
-    setEnteredAge('');
-  };
+    onAddUser(userName, userAge);
 
-  const usernameChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-    setEnteredUsername(event.target.value);
-  };
+    if (userNameRef.current !== null) {
+      userNameRef.current.value = '';
+    }
 
-  const ageChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-    setEnteredAge(event.target.value);
+    if (userAgeRef.current !== null) {
+      userAgeRef.current.value = '';
+    }
   };
 
   const errorHandler = () => {
@@ -43,19 +44,14 @@ const AddUser = ({ onAddUser }: { onAddUser: (uName: string, uAge: string) => vo
   };
 
   return (
-    <> 
+    <>
       {error && <ErrorModal title={error.name} message={error.message} onConfirm={errorHandler} />}
       <Card className={classes.input}>
         <form onSubmit={addUserHandler}>
           <label htmlFor="username">Username</label>
-          <input
-            id="username"
-            type="text"
-            value={enteredUsername}
-            onChange={usernameChangeHandler}
-          />
+          <input id="username" type="text" ref={userNameRef} />
           <label htmlFor="age">Age (Years)</label>
-          <input id="age" type="number" value={enteredAge} onChange={ageChangeHandler} />
+          <input id="age" type="number" ref={userAgeRef} />
           <Button type="submit">Add User</Button>
         </form>
       </Card>
