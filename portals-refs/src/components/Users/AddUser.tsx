@@ -43,7 +43,7 @@ const AddUser = ({ onAddUser }: { onAddUser: (uName: string, uAge: string) => vo
   };
 
   return (
-    <div>
+    <> 
       {error && <ErrorModal title={error.name} message={error.message} onConfirm={errorHandler} />}
       <Card className={classes.input}>
         <form onSubmit={addUserHandler}>
@@ -59,7 +59,7 @@ const AddUser = ({ onAddUser }: { onAddUser: (uName: string, uAge: string) => vo
           <Button type="submit">Add User</Button>
         </form>
       </Card>
-    </div>
+    </>
   );
 };
 
