@@ -1,30 +1,57 @@
-import React, { ChangeEvent, FormEvent, useState } from 'react';
-
+import React, { useState, useEffect, useReducer, FormEvent } from 'react';
 import Card from '../UI/Card/Card';
 import classes from './Login.module.css';
 import Button from '../UI/Button/Button';
 
-const Login = (props: { onLogin: (email: string, password: string) => void }) => {
-  const [enteredEmail, setEnteredEmail] = useState('');
-  const [emailIsValid, setEmailIsValid] = useState<boolean>();
+interface EmailState {
+  value: string;
+  isValid: boolean | null;
+}
+
+type Action = { type: 'USER_INPUT'; val: string } | { type: 'INPUT_BLUR' };
+
+const emailReducer = (state: EmailState, action: Action): EmailState => {
+  if (action.type === 'USER_INPUT') {
+    return { value: action.val, isValid: action.val.includes('@') };
+  }
+  if (action.type === 'INPUT_BLUR') {
+    return { value: state.value, isValid: state.value.includes('@') };
+  }
+  return { value: '', isValid: false };
+};
+
+const Login = ({ onLogin }: { onLogin: (email: string, password: string) => void }) => {
   const [enteredPassword, setEnteredPassword] = useState('');
-  const [passwordIsValid, setPasswordIsValid] = useState<boolean>();
+  const [passwordIsValid, setPasswordIsValid] = useState<boolean | undefined>();
   const [formIsValid, setFormIsValid] = useState(false);
 
-  const emailChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-    setEnteredEmail(event.target.value);
+  const [emailState, dispatchEmail] = useReducer(emailReducer, {
+    value: '',
+    isValid: null,
+  });
+
+  useEffect(() => {
+    console.log('EFFECT RUNNING');
+
+    return () => {
+      console.log('EFFECT CLEANUP');
+    };
+  }, []);
+
+  const emailChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    dispatchEmail({ type: 'USER_INPUT', val: event.target.value });
 
     setFormIsValid(event.target.value.includes('@') && enteredPassword.trim().length > 6);
   };
 
-  const passwordChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+  const passwordChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEnteredPassword(event.target.value);
 
-    setFormIsValid(event.target.value.trim().length > 6 && enteredEmail.includes('@'));
+    setFormIsValid(emailState.isValid === true && event.target.value.trim().length > 6);
   };
 
   const validateEmailHandler = () => {
-    setEmailIsValid(enteredEmail.includes('@'));
+    dispatchEmail({ type: 'INPUT_BLUR' });
   };
 
   const validatePasswordHandler = () => {
@@ -33,18 +60,20 @@ const Login = (props: { onLogin: (email: string, password: string) => void }) =>
 
   const submitHandler = (event: FormEvent) => {
     event.preventDefault();
-    props.onLogin(enteredEmail, enteredPassword);
+    onLogin(emailState.value, enteredPassword);
   };
 
   return (
     <Card className={classes.login}>
       <form onSubmit={submitHandler}>
-        <div className={`${classes.control} ${emailIsValid === false ? classes.invalid : ''}`}>
+        <div
+          className={`${classes.control} ${emailState.isValid === false ? classes.invalid : ''}`}
+        >
           <label htmlFor="email">E-Mail</label>
           <input
             type="email"
             id="email"
-            value={enteredEmail}
+            value={emailState.value}
             onChange={emailChangeHandler}
             onBlur={validateEmailHandler}
           />
