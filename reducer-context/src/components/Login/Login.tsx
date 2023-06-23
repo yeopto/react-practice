@@ -45,12 +45,18 @@ const Login = ({ onLogin }: { onLogin: (email: string, password: string) => void
   });
 
   useEffect(() => {
-    console.log('EFFECT RUNNING');
+    const identifier = setTimeout(() => {
+      console.log('checking from validaity');
+      if (emailState.isValid !== null && passwordState.isValid !== null) {
+        setFormIsValid(emailState.isValid && passwordState.isValid);
+      }
+    }, 500);
 
     return () => {
       console.log('EFFECT CLEANUP');
+      clearTimeout(identifier);
     };
-  }, []);
+  }, [emailState.isValid, passwordState.isValid]);
 
   const emailChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     dispatchEmail({ type: 'USER_INPUT', val: event.target.value });
