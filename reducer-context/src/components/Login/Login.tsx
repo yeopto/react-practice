@@ -60,14 +60,10 @@ const Login = ({ onLogin }: { onLogin: (email: string, password: string) => void
 
   const emailChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     dispatchEmail({ type: 'USER_INPUT', val: event.target.value });
-
-    setFormIsValid(event.target.value.includes('@') && passwordState.value.length > 6);
   };
 
   const passwordChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     dispatchPassword({ type: 'USER_INPUT', val: event.target.value });
-
-    setFormIsValid(emailState.isValid === true && event.target.value.trim().length > 6);
   };
 
   const validateEmailHandler = () => {
