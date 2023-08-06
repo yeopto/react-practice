@@ -20,11 +20,11 @@ const todos = [
 export const handlers = [
   // 할일 목록
   rest.get('/todos', (req, res, ctx) => {
-    return res(ctx.status(200), ctx.json(todos), ctx.delay(1000));
+    return res(ctx.status(200), ctx.json(todos), ctx.delay(900));
   }),
 
   rest.get('/name', (req, res, ctx) => {
-    return res(ctx.status(200), ctx.json(name), ctx.delay(1000));
+    return res(ctx.status(200), ctx.json(name), ctx.delay(200));
   }),
 
   // 할일 추가
