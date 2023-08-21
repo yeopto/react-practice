@@ -1,14 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App.tsx';
 import { worker } from './mocks/worker';
 
-if (process.env.NODE_ENV === 'development') {
-  worker.start();
-}
+const main = async () => {
+  await worker.start();
+  const { default: App } = await import('./App');
+  ReactDOM.createRoot(document.getElementById('root')!).render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>,
+  );
+};
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-);
+main();

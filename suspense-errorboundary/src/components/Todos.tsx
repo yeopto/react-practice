@@ -1,10 +1,15 @@
 import { Todo } from '../App';
+import fetchData from '../api/fetchData';
 
 export type Props = {
   todos: Todo[];
 };
 
-const Todos = ({ todos }: Props) => {
+const resource = fetchData<Todo[]>('/todos');
+
+const Todos = () => {
+  const todos = resource.read();
+
   return (
     <div>
       {todos.map(todo => (
